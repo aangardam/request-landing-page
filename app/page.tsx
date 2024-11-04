@@ -139,24 +139,24 @@ export default function RequestLandingPage() {
     } else {
       url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
     }
-    // const url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
-    // const url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
-    const width = 350;
-    const height = 1113;
+    window.location.href = url;
 
-    // Calculate the position to center the window
-    const left = (window.screen.width / 2) - (width / 2);
-    const top = (window.screen.height / 2) - (height / 2);
+    // const width = 350;
+    // const height = 1113;
 
-    // Open the new window
-    const newWindow = window.open(url, '_blank', `width=${width},height=${height},top=${top},left=${left}`);
-    const checkWindowClosed = setInterval(() => {
-      if (newWindow?.closed) {
-        clearInterval(checkWindowClosed);
-        // Regenerate the order ID when the new window is closed
-        form.setValue('orderId', generateOrderId());
-      }
-    }, 500);
+    // // Calculate the position to center the window
+    // const left = (window.screen.width / 2) - (width / 2);
+    // const top = (window.screen.height / 2) - (height / 2);
+
+    // // Open the new window
+    // const newWindow = window.open(url, '_blank', `width=${width},height=${height},top=${top},left=${left}`);
+    // const checkWindowClosed = setInterval(() => {
+    //   if (newWindow?.closed) {
+    //     clearInterval(checkWindowClosed);
+    //     // Regenerate the order ID when the new window is closed
+    //     form.setValue('orderId', generateOrderId());
+    //   }
+    // }, 500);
 
 
   }
