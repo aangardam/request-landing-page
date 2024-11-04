@@ -133,13 +133,14 @@ export default function RequestLandingPage() {
     }
     const hash = landingPage?.data
 
-    // let url;
-    // if (values.runningApp === 'local') {
-    //   url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
-    // } else {
-    //   url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
-    // }
-    const url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
+    let url;
+    if (values.runningApp === 'local') {
+      url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
+    } else {
+      url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
+    }
+    // const url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
+    // const url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
     const width = 350;
     const height = 1113;
 
@@ -277,7 +278,7 @@ export default function RequestLandingPage() {
                             )}
                           />
                         </div>
-                        {/* <div className='grid w-full items-center gap-1.5'>
+                       <div className='grid w-full items-center gap-1.5'>
                           <FormField
                             control={form.control}
                             name="runningApp"
@@ -301,7 +302,7 @@ export default function RequestLandingPage() {
                               </FormItem>
                             )}
                           />
-                        </div> */}
+                        </div>
                       </div>
                     </div>
                   </TabsContent>
