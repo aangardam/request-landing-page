@@ -142,7 +142,7 @@ export default function RequestLandingPage() {
     const url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
     // const url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
 
-    if(values.openNewTab == 'ya'){
+    if(values.openNewTab == 'yes'){
       const width = 350;
       const height = 1113;
   
