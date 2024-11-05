@@ -40,7 +40,7 @@ const formSchema = z.object({
   paymentRef: z.string().optional(),
   remark: z.string().optional(),
   comment: z.string().optional(),
-  runningApp: z.string().optional(),
+  openNewTab: z.string().optional(),
 });
 
 export default function RequestLandingPage() {
@@ -68,7 +68,7 @@ export default function RequestLandingPage() {
       paymentRef:"-",
       remark:"-",
       comment:"-",
-      runningApp:"server"
+      openNewTab:"yes"
     }
   })
 
@@ -133,30 +133,36 @@ export default function RequestLandingPage() {
     }
     const hash = landingPage?.data
 
-    let url;
-    if (values.runningApp === 'local') {
-      url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
-    } else {
-      url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
+    // let url;
+    // if (values.runningApp === 'local') {
+    //   url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
+    // } else {
+    //   url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
+    // }
+    const url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
+    // const url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
+
+    if(values.openNewTab == 'ya'){
+      const width = 350;
+      const height = 1113;
+  
+      // Calculate the position to center the window
+      const left = (window.screen.width / 2) - (width / 2);
+      const top = (window.screen.height / 2) - (height / 2);
+  
+      // Open the new window
+      const newWindow = window.open(url, '_blank', `width=${width},height=${height},top=${top},left=${left}`);
+      const checkWindowClosed = setInterval(() => {
+        if (newWindow?.closed) {
+          clearInterval(checkWindowClosed);
+          // Regenerate the order ID when the new window is closed
+          form.setValue('orderId', generateOrderId());
+        }
+      }, 500);
+    }else{
+      window.location.href = url;
     }
-    window.location.href = url;
-
-    // const width = 350;
-    // const height = 1113;
-
-    // // Calculate the position to center the window
-    // const left = (window.screen.width / 2) - (width / 2);
-    // const top = (window.screen.height / 2) - (height / 2);
-
-    // // Open the new window
-    // const newWindow = window.open(url, '_blank', `width=${width},height=${height},top=${top},left=${left}`);
-    // const checkWindowClosed = setInterval(() => {
-    //   if (newWindow?.closed) {
-    //     clearInterval(checkWindowClosed);
-    //     // Regenerate the order ID when the new window is closed
-    //     form.setValue('orderId', generateOrderId());
-    //   }
-    // }, 500);
+    
 
 
   }
@@ -178,12 +184,12 @@ export default function RequestLandingPage() {
 
   const choiceRunningApp = [
     {
-      value: "local",
-      label: process.env.NEXT_PUBLIC_URL_LOCAL,
+      value: "yes",
+      label: 'Ya, Buka di tab baru',
     },
     {
-      value: "server",
-      label: process.env.NEXT_PUBLIC_URL_SERVER,
+      value: "no",
+      label: "Tidak, Buka di tab saat ini",
     },
   ];
 
@@ -281,14 +287,14 @@ export default function RequestLandingPage() {
                        <div className='grid w-full items-center gap-1.5'>
                           <FormField
                             control={form.control}
-                            name="runningApp"
+                            name="openNewTab"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Running Application</FormLabel>
+                                <FormLabel> Buka di tab baru ?</FormLabel>
                                 <FormControl>
                                   <Select {...field} value={field.value} onValueChange={field.onChange}>
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Select Running App" />
+                                      <SelectValue placeholder="Open New Tab ?" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {choiceRunningApp.map((choice) => (
@@ -307,7 +313,7 @@ export default function RequestLandingPage() {
                     </div>
                   </TabsContent>
                   <TabsContent value='order'>
-                    <div className='grid w-full items-center gap-1.5 md:col-span-2 gap-4'>
+                    <div className='grid w-full items-center gap-1.5 md:col-span-2'>
                       <FormField
                         control={form.control}
                         name='orderId'
