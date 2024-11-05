@@ -41,14 +41,15 @@ const formSchema = z.object({
   remark: z.string().optional(),
   comment: z.string().optional(),
   openNewTab: z.string().optional(),
+  runOnServer: z.string().optional(),
 });
 
 export default function RequestLandingPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver:zodResolver(formSchema),
     defaultValues:{
-      merchantCode:"MRCN002",
-      clientId:"client-002",
+      merchantCode:"MRCN001",
+      clientId:"client-001",
       publicKey:"MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBBAZhNllQfb2py0g5vn8KfGnO1JOScDnRpQ5aoG9iLg1xU/jXbJWpek6pW08bRGXwV9yapvAmToI5Op/SSPap5acCAwEAAQ==",
       expiredTimeOrder:300,
       orderId:"",
@@ -68,7 +69,8 @@ export default function RequestLandingPage() {
       paymentRef:"-",
       remark:"-",
       comment:"-",
-      openNewTab:"yes"
+      openNewTab:"yes",
+      runOnServer:"server",
     }
   })
 
@@ -79,7 +81,7 @@ export default function RequestLandingPage() {
   const { mutateAsync: reqLandingPage } = useRequestLandingPage()
 
   const onSubmit = async(values:z.infer<typeof formSchema>)=>{
-    console.log(values)
+    // console.log(values)
 
     const bodyReqAccessToken = {
       clientId : values.clientId
@@ -120,8 +122,8 @@ export default function RequestLandingPage() {
     }
 
     const { signature, timestamp } = generate.data;
-    console.log('signature', signature)
-    console.log('timestamp', timestamp)
+    // console.log('signature', signature)
+    // console.log('timestamp', timestamp)
     const bodyReqLanidngPage = {
       ...bodyReqGenerateSignatur,
       signature,
@@ -133,15 +135,13 @@ export default function RequestLandingPage() {
     }
     const hash = landingPage?.data
 
-    // let url;
-    // if (values.runningApp === 'local') {
-    //   url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
-    // } else {
-    //   url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
-    // }
-    const url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
-    // const url = `${process.env.NEXT_PUBLIC_URL_LOCAL}${hash.hash}`;
-
+    let url;
+    if (values.runOnServer === 'alternatif') {
+      url = `${process.env.NEXT_PUBLIC_URL_ALTERNATIF}${hash.hash}`;
+    } else {
+      url = `${process.env.NEXT_PUBLIC_URL_SERVER}${hash.hash}`;
+    }
+   
     if(values.openNewTab == 'yes'){
       const width = 350;
       const height = 1113;
@@ -185,11 +185,11 @@ export default function RequestLandingPage() {
   const choiceRunningApp = [
     {
       value: "yes",
-      label: 'Ya, Buka di tab baru',
+      label: 'Yes, Open in new tab',
     },
     {
       value: "no",
-      label: "Tidak, Buka di tab saat ini",
+      label: "No, Open in current tab",
     },
   ];
 
@@ -284,13 +284,37 @@ export default function RequestLandingPage() {
                             )}
                           />
                         </div>
-                       <div className='grid w-full items-center gap-1.5'>
+                        
+                        <div className='grid w-full items-center gap-1.5'>
+                          <FormField
+                            control={form.control}
+                            name="runOnServer"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel> Run the application on the server URL or alternative URL?</FormLabel>
+                                <FormControl>
+                                  <Select {...field} value={field.value} onValueChange={field.onChange}>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select URL option" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="server">Server</SelectItem>
+                                      <SelectItem value="alternatif">Alternatif</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className='grid w-full items-center gap-1.5'>
                           <FormField
                             control={form.control}
                             name="openNewTab"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel> Buka di tab baru ?</FormLabel>
+                                <FormLabel> Open in a new tab?</FormLabel>
                                 <FormControl>
                                   <Select {...field} value={field.value} onValueChange={field.onChange}>
                                     <SelectTrigger>
@@ -312,6 +336,7 @@ export default function RequestLandingPage() {
                       </div>
                     </div>
                   </TabsContent>
+
                   <TabsContent value='order'>
                     <div className='grid w-full items-center gap-1.5 md:col-span-2'>
                       <FormField
