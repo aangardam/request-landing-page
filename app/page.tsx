@@ -79,8 +79,9 @@ export default function RequestLandingPage() {
   const { mutateAsync: generateAccessToken } = useGenerateAccessToken()
   const { mutateAsync: generateSignature } = useGenerateSignature()
   const { mutateAsync: reqLandingPage } = useRequestLandingPage()
-
+  const [processLoading, setProcessLoading] = useState(false)
   const onSubmit = async(values:z.infer<typeof formSchema>)=>{
+    setProcessLoading(true)
     // console.log(values)
 
     const bodyReqAccessToken = {
@@ -163,7 +164,7 @@ export default function RequestLandingPage() {
       window.location.href = url;
     }
     
-
+    setProcessLoading(false)
 
   }
 
@@ -291,15 +292,15 @@ export default function RequestLandingPage() {
                             name="runOnServer"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel> Run the application on the server URL or alternative URL?</FormLabel>
+                                <FormLabel> Run the application on the main domain or subdomain ?</FormLabel>
                                 <FormControl>
                                   <Select {...field} value={field.value} onValueChange={field.onChange}>
                                     <SelectTrigger>
                                       <SelectValue placeholder="Select URL option" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="server">Server</SelectItem>
-                                      <SelectItem value="alternatif">Alternatif</SelectItem>
+                                      <SelectItem value="server">Domain</SelectItem>
+                                      <SelectItem value="alternatif">Subdomain</SelectItem>
                                     </SelectContent>
                                   </Select>
                                 </FormControl>
@@ -308,7 +309,7 @@ export default function RequestLandingPage() {
                           />
                         </div>
 
-                        <div className='grid w-full items-center gap-1.5'>
+                        {/* <div className='grid w-full items-center gap-1.5'>
                           <FormField
                             control={form.control}
                             name="openNewTab"
@@ -332,7 +333,7 @@ export default function RequestLandingPage() {
                               </FormItem>
                             )}
                           />
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </TabsContent>
@@ -633,7 +634,10 @@ export default function RequestLandingPage() {
               </ScrollArea>
             </Tabs>
             <CardFooter className="flex justify-between mt-5">
-              <Button>Request Landing Page</Button>
+              <Button
+                disabled={processLoading}
+                isLoading={processLoading}
+              >Request Landing Page</Button>
             </CardFooter>
           </Card>
         </form>
